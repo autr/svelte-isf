@@ -1,0 +1,3 @@
+[submodule "interactive-shader-format"]
+	path = interactive-shader-format
+	url = https://github.com/msfeldstein/interactive-shader-format-js
