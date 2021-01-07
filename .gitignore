@@ -3,3 +3,4 @@ private
 node_modules
 yarn.lock
 yarn-error.log
+assets/index.js*

@@ -3,6 +3,7 @@
 	// https://discourse.threejs.org/t/how-to-get-canvas-as-a-texture-to-chain-together-shaders/16056
 
 	import { onMount } from 'svelte'
+	import utils from './utils.js'
 	import { Renderer, Parser, Upgrader, MetadataExtractor } from 'interactive-shader-format'
 
 	export let chain, input, output;
@@ -10,11 +11,6 @@
 
 	function onFrame() {
 
-		// tapestryfract doesn't have inputImage so we'll need to check
-
-
-
-		// renderer.draw( output )
 
 		for (let i = 0; i < renderers.length; i++) {
 			const o = renderers[i]
@@ -24,6 +20,7 @@
 			r.draw( output )
 
 		}
+
 
 		requestAnimationFrame( onFrame )
 
@@ -52,6 +49,7 @@
 			try {
 				let url = `${name}.fs`
 				fsSrc = await (await fetch(url)).text()
+				fsSrc = fsSrc.replace('$UTILS', utils)
 				console.log(`[ISF] loaded ${url}...`)
 			} catch(err) {
 				console.log(`[ISF] no fs path to load...`)

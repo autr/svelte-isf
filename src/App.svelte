@@ -2,13 +2,14 @@
 
 	// https://discourse.threejs.org/t/how-to-get-canvas-as-a-texture-to-chain-together-shaders/16056
 
+	// ADD NEW INVERTINATOR!
+
 	import { onMount } from 'svelte'
 	// import { Renderer, Parser, Upgrader, MetadataExtractor } from 'interactive-shader-format'
 	import Source from './Source.svelte'
 	import ISF from './ISF.svelte'
 
 	let video, canvas, ctx
-
 
 	onMount(async () => {
 
@@ -32,7 +33,7 @@
 
 	})
 
-	let chain = ['private/invertinator', 'private/pixelshifter']
+	let chain = ['private/shapes']
 </script>
 
 <main>
@@ -44,3 +45,5 @@
 </main>
 
 
+
+		
