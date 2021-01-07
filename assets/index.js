@@ -614,6 +614,112 @@ var app = (function () {
     	}
     }
 
+    var utils = `
+
+#define PI 3.14159265358979323846264338327
+
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+vec2 intersection(vec2 a,vec2 b,vec2 c,vec2 d) {
+    float ua, ub, denom = (d.y - c.y)*(b.x - a.x) - (d.x - c.x)*(b.y - a.y);
+    if (denom == 0.0) return vec2(-1.0,-1.0);
+    ua = ((d.x - c.x)*(a.y - c.y) - (d.y - c.y)*(a.x - c.x))/denom;
+    ub = ((b.x - a.x)*(a.y - c.y) - (b.y - a.y)*(a.x - c.x))/denom;
+    return vec2(
+        a.x + ua * (b.x - a.x),
+        a.y + ua * (b.y - a.y)
+    );
+}
+vec2 inter(vec2 pointA, vec2 pointB, vec2 pointC, vec2 pointD) {
+
+  float z1 = (pointA.x - pointB.x);
+  float z2 = (pointC.x - pointD.x);
+  float z3 = (pointA.y - pointB.y);
+  float z4 = (pointC.y - pointD.y);
+  float dist = z1 * z4 - z3 * z2;
+  vec2 blank = vec2(-1.0,-1.0);
+  if (dist == 0.0) {
+    return blank;
+  }
+  float tempA = (pointA.x * pointB.y - pointA.y * pointB.x);
+  float tempB = (pointC.x * pointD.y - pointC.y * pointD.x);
+  float xCoor = (tempA * z2 - z1 * tempB) / dist;
+  float yCoor = (tempA * z4 - z3 * tempB) / dist;
+
+  return vec2(xCoor, yCoor);
+}
+
+vec2 rotate(vec2 origin, vec2 point, float angle) {
+  float rad = (PI / 180.0) * angle;
+  float _cos = cos(rad);
+  float _sin = sin(rad);
+  float run = point.x - origin.x;
+  float rise = point.y - origin.y;
+  float cx = (_cos * run) + (_sin * rise) + origin.x;
+  float cy = (_cos * rise) - (_sin * run) + origin.y;
+  return vec2(
+    cx,
+    cy
+  );
+}
+
+
+float noise(vec2 n) {
+    const vec2 d = vec2(0.0, 1.0);
+  vec2 b = floor(n), f = smoothstep(vec2(0.0), vec2(1.0), fract(n));
+    return mix(mix(rand(b), rand(b + d.yx), f.x), mix(rand(b + d.xy), rand(b + d.yy), f.x), f.y);
+}
+
+float map(float oldValue, float oldMin, float oldMax, float newMin, float newMax) {
+	float oldRange = oldMax - oldMin;
+	float newRange = newMax - newMin;
+
+	return ((oldValue - oldMin) * newRange / oldRange) + newMin;
+}
+
+float angle( vec2 a, vec2 b ) {
+	return atan(b.y - a.y, b.x - a.x)  * 360.0 / PI;
+}
+
+vec2 vec2_from_angle(vec2 xy, float angle, float dist) {
+	float x = cos(angle * PI / 180.0) * dist + xy.x;
+	float y = sin(angle * PI / 180.0) * dist + xy.y;
+    return vec2(x,y);
+}
+
+void debug( float v, float min, float max ) {
+
+	vec2		loc = gl_FragCoord.xy;
+	float vv = map( v, min, max, 0.0, RENDERSIZE.x );
+	if (loc.x > vv && loc.x < vv + 10.0) {
+		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+
+}
+
+vec2 vec2_polar( vec2 a, vec2 b, vec2 c) {
+
+	float slope = (a.y - b.y) / (a.x - b.x);
+	float m = -1.0 / slope;
+	float x = (m * c.x - c.y - slope * a.x + a.y) / (m - slope);
+	float y = m * x - m * c.x + c.y;
+	return vec2(x,y);
+}
+
+float polar_dist(vec2 a, vec2 b, vec2 c) {
+
+	return ((c.x - a.x)*(b.x - a.x) + (c.y - a.y)*(b.y - a.y)) /
+    (pow(b.x - a.x, 2.0) + pow(b.y - a.y, 2.0));
+}
+
+float fmod( float a, float b ) {
+	return a - b * floor(a/b);
+}
+`;
+
     // TODO: remove these polyfills as soon as we have a build process that transpiles the code to ES5
     // Polyfill for IE 11 (Number.isFinite is used in `complex.js`)
     // source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isFinite
@@ -15083,7 +15189,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     	return child_ctx;
     }
 
-    // (91:4) {#if sys.indexOf(k) == -1 && name.indexOf('inputImage') == -1 }
+    // (89:4) {#if sys.indexOf(k) == -1 && name.indexOf('inputImage') == -1 }
     function create_if_block(ctx) {
     	let div;
     	let t0_value = /*name*/ ctx[11] + "";
@@ -15104,8 +15210,8 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     			t1 = space();
     			input_1 = element("input");
     			attr_dev(input_1, "type", "text");
-    			add_location(input_1, file$1, 93, 6, 1979);
-    			add_location(div, file$1, 91, 5, 1954);
+    			add_location(input_1, file$1, 91, 6, 1957);
+    			add_location(div, file$1, 89, 5, 1932);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -15138,14 +15244,14 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(91:4) {#if sys.indexOf(k) == -1 && name.indexOf('inputImage') == -1 }",
+    		source: "(89:4) {#if sys.indexOf(k) == -1 && name.indexOf('inputImage') == -1 }",
     		ctx
     	});
 
     	return block;
     }
 
-    // (90:3) {#each Object.entries(o.renderer.uniforms) as [name, u] (k) }
+    // (88:3) {#each Object.entries(o.renderer.uniforms) as [name, u] (k) }
     function create_each_block_1(key_1, ctx) {
     	let first;
     	let show_if = /*sys*/ ctx[1].indexOf(k) == -1 && /*name*/ ctx[11].indexOf("inputImage") == -1;
@@ -15194,14 +15300,14 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(90:3) {#each Object.entries(o.renderer.uniforms) as [name, u] (k) }",
+    		source: "(88:3) {#each Object.entries(o.renderer.uniforms) as [name, u] (k) }",
     		ctx
     	});
 
     	return block;
     }
 
-    // (87:1) {#each renderers as o, i }
+    // (85:1) {#each renderers as o, i }
     function create_each_block(ctx) {
     	let div0;
     	let t0_value = /*o*/ ctx[8].name + "";
@@ -15234,9 +15340,9 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     			}
 
     			t2 = space();
-    			add_location(div0, file$1, 87, 2, 1771);
+    			add_location(div0, file$1, 85, 2, 1749);
     			attr_dev(div1, "class", "uniforms");
-    			add_location(div1, file$1, 88, 2, 1793);
+    			add_location(div1, file$1, 86, 2, 1771);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div0, anchor);
@@ -15275,7 +15381,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(87:1) {#each renderers as o, i }",
+    		source: "(85:1) {#each renderers as o, i }",
     		ctx
     	});
 
@@ -15307,8 +15413,8 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     				each_blocks[i].c();
     			}
 
-    			add_location(h1, file$1, 85, 1, 1713);
-    			add_location(div, file$1, 84, 0, 1706);
+    			add_location(h1, file$1, 83, 1, 1691);
+    			add_location(div, file$1, 82, 0, 1684);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -15376,8 +15482,6 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     	let renderers = [];
 
     	function onFrame() {
-    		// tapestryfract doesn't have inputImage so we'll need to check
-    		// renderer.draw( output )
     		for (let i = 0; i < renderers.length; i++) {
     			const o = renderers[i];
     			const r = o.renderer;
@@ -15405,6 +15509,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     			try {
     				let url = `${name}.fs`;
     				fsSrc = await (await fetch(url)).text();
+    				fsSrc = fsSrc.replace("$UTILS", utils);
     				console.log(`[ISF] loaded ${url}...`);
     			} catch(err) {
     				console.log(`[ISF] no fs path to load...`);
@@ -15446,6 +15551,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
 
     	$$self.$capture_state = () => ({
     		onMount,
+    		utils,
     		Renderer: ISFRenderer,
     		Parser: ISFParser,
     		Upgrader,
@@ -15532,7 +15638,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     const { console: console_1$1 } = globals;
     const file$2 = "src/App.svelte";
 
-    // (41:1) {#if ctx }
+    // (42:1) {#if ctx }
     function create_if_block$1(ctx) {
     	let isf;
     	let updating_input;
@@ -15604,7 +15710,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(41:1) {#if ctx }",
+    		source: "(42:1) {#if ctx }",
     		ctx
     	});
 
@@ -15643,8 +15749,8 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     			t1 = space();
     			if (if_block) if_block.c();
     			attr_dev(canvas_1, "id", "canvas");
-    			add_location(canvas_1, file$2, 38, 1, 753);
-    			add_location(main, file$2, 37, 0, 745);
+    			add_location(canvas_1, file$2, 39, 1, 749);
+    			add_location(main, file$2, 38, 0, 741);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -15741,7 +15847,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     	// createRendering('invertinator.isf')
     	// createRendering('pixelshifter.isf')
 
-    	let chain = ["private/invertinator", "private/pixelshifter"];
+    	let chain = ["private/shapes"];
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
