@@ -33,7 +33,7 @@
 
 	})
 
-	let chain = ['private/shapes']
+	let chain = ['private/invertinator']
 </script>
 
 <main>

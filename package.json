@@ -5,6 +5,9 @@
   "author": "G.Sinnott",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "15.x"
+  },
   "dependencies": {
     "@rollup/plugin-json": "^4.1.0",
     "body-parser": "^1.19.0",
@@ -19,6 +22,7 @@
     "jimp": "^0.16.1",
     "linux-app-list": "^1.0.1",
     "mime": "^2.4.7",
+    "node-sass": "^5.0.0",
     "nodemon": "^2.0.6",
     "open": "^7.3.0",
     "passport": "^0.4.1",
@@ -48,6 +52,7 @@
   "scripts": {
     "start": "sirv assets",
     "build": "rollup -c",
-    "dev": "rollup -c -w & node-sass src/global.sass assets/global.css -w"
+    "dev": "rollup -c -w & node-sass src/global.sass assets/global.css -w",
+    "chromium": "DISPLAY=:0 chromium --kiosk --disable-infobars --incognito  http://localhost:5000"
   }
 }
