@@ -15749,8 +15749,8 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     			t1 = space();
     			if (if_block) if_block.c();
     			attr_dev(canvas_1, "id", "canvas");
-    			add_location(canvas_1, file$2, 39, 1, 749);
-    			add_location(main, file$2, 38, 0, 741);
+    			add_location(canvas_1, file$2, 39, 1, 755);
+    			add_location(main, file$2, 38, 0, 747);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -15847,7 +15847,7 @@ gl_Position = vec4( isf_position, 0.0, 1.0 );
     	// createRendering('invertinator.isf')
     	// createRendering('pixelshifter.isf')
 
-    	let chain = ["private/shapes"];
+    	let chain = ["private/invertinator"];
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
