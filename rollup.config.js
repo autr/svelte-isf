@@ -32,7 +32,7 @@ function serve() {
 export default {
 	input: 'src/index.js',
 	output: {
-		sourcemap: true,
+		sourcemap: false,
 		format: 'iife',
 		name: 'app',
 		file: 'assets/index.js'
