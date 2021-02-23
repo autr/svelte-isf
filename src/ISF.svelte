@@ -4,7 +4,7 @@
 
 	import { onMount } from 'svelte'
 	import utils from './utils.js'
-	import { Renderer, Parser, Upgrader, MetadataExtractor } from 'interactive-shader-format'
+	import { Renderer, Parser, Upgrader, MetadataExtractor } from '../interactive-shader-format'
 
 	export let chain, input, output;
 	let renderers = []
@@ -65,7 +65,18 @@
 				console.log(`[ISF] no vs path to load...`)
 			}
 
-			const renderer = new Renderer( output.getContext('webgl2') )
+			// Using webgl2 for non-power-of-two textures
+
+			let ctx = output.getContext('webgl2')
+			const type = 'webgl'
+			if (!ctx) {
+				console.log(`[ISF] browser doesn't support "webgl2", switching to "${type}"`)
+				ctx = output.getContext(type)
+			}
+			console.log('[ISF] got context:', ctx)
+			if (!ctx) return console.error('[ISF] no context for webgl')
+
+			const renderer = new Renderer( ctx )
 			renderer.loadSource( fsSrc, vsSrc )
 			renderers.push({
 				name,
@@ -81,7 +92,7 @@
 </script>
 
 <div>
-	<h1>{renderers.length}</h1>
+	<h1>ISF {renderers.length}</h1>
 	{#each renderers as o, i }
 		<div>{o.name}</div>
 		<div class="uniforms">

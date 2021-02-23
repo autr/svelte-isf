@@ -9,7 +9,7 @@
 	import Source from './Source.svelte'
 	import ISF from './ISF.svelte'
 
-	let video, canvas, ctx
+	let video, canvas
 
 	onMount(async () => {
 
@@ -18,18 +18,6 @@
 		canvas.width = 720
 		canvas.height = 576
 
-		// Using webgl2 for non-power-of-two textures
-
-		ctx = canvas.getContext('webgl2')
-
-		console.log(canvas, ctx);
-
-		// const target = new WebGLTexture()
-
-
-
-		// createRendering('invertinator.isf')
-		// createRendering('pixelshifter.isf')
 
 	})
 
@@ -39,9 +27,7 @@
 <main>
 	<canvas bind:this={canvas} id="canvas" />
 	<Source bind:ref={video} />
-	{#if ctx }
-		<ISF bind:input={video} bind:output={canvas} {chain} />
-	{/if}
+	<ISF bind:input={video} bind:output={canvas} {chain} />
 </main>
 
 
