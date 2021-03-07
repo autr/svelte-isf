@@ -21,7 +21,7 @@
 
 	})
 
-	let chain = ['private/invertinator']
+	let chain = ['private-isf/invertinator']
 </script>
 
 <main>

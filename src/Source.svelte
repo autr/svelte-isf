@@ -7,9 +7,13 @@
 		video.autoplay = true
 		navigator.mediaDevices.getUserMedia({
 			video: true
-		}).then(function(stream){
+		}).then( stream => {
 			video.srcObject = stream
 			ref = video   
+		}).catch( err => {
+			alert('ERROR OPENING DEVICE')
+			console.log(err)
+			console.log(err.message)
 		})
 	}
 
